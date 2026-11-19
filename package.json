@@ -1,0 +1,32 @@
+{
+  "name": "safe-bike-seoul",
+  "version": "0.1.0",
+  "private": true,
+  "engines": { "node": "24.x" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "check:api": "node scripts/check-api.mjs",
+    "check:routing": "node scripts/check-routing.mjs",
+    "check:accidents": "node scripts/check-accidents.mjs",
+    "check:weather": "node scripts/check-weather.mjs",
+    "check:integration": "node scripts/check-integration.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check:release": "node scripts/check-release.mjs"
+  },
+  "dependencies": {
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "typescript": "^5"
+  }
+}

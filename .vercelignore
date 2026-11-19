@@ -1,0 +1,12 @@
+.git
+.env*
+!.env.example
+node_modules
+.next
+.release
+*.zip
+*.pem
+*.key
+*.p12
+*.pfx
+*.tsbuildinfo

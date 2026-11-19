@@ -1,0 +1,22 @@
+import assert from "node:assert/strict";
+import nextEnv from "@next/env";
+import { kmaTimestamp, toKmaGrid } from "../src/lib/weather.ts";
+nextEnv.loadEnvConfig(process.cwd(), false, { info() {}, error() {} });
+const base = process.env.TEST_BASE_URL || "http://localhost:3000";
+const response = await fetch(`${base}/api/weather?lat=37.5284&lng=126.9346`);
+const raw = await response.text();
+let key = process.env.DATA_GO_KR_API_KEY;
+if (key) { assert.equal(raw.includes(key), false, "Credential found in weather response"); try { key = decodeURIComponent(key); } catch { /* Keep raw. */ } assert.equal(raw.includes(key), false, "Decoded credential found in weather response"); }
+assert.equal(response.status, 200, "Live weather API failed");
+const body = JSON.parse(raw), data = body.data;
+assert.equal(body.meta.source, "kma-vilage-forecast");
+assert.equal(body.meta.isDemo, false);
+assert.equal(body.meta.isObservation, false);
+assert.deepEqual(data.grid, toKmaGrid(37.5284, 126.9346));
+assert.equal(data.issuedAt, kmaTimestamp(data.baseDate, data.baseTime));
+assert.equal(data.current.forecastAt, kmaTimestamp(data.current.forecastDate, data.current.forecastTime));
+assert.ok(Date.parse(data.current.forecastAt) >= Date.parse(data.issuedAt));
+assert.ok(Number.isFinite(data.current.temperature));
+assert.ok(data.current.precipitationProbability >= 0 && data.current.precipitationProbability <= 100);
+assert.ok(data.upcoming.every((slot) => slot.forecastAt >= data.current.forecastAt));
+console.log(JSON.stringify({ grid: data.grid, baseDate: data.baseDate, baseTime: data.baseTime, forecastDate: data.current.forecastDate, forecastTime: data.current.forecastTime, temperature: data.current.temperature, precipitationProbability: data.current.precipitationProbability, usedPreviousIssue: data.usedPreviousIssue }));
